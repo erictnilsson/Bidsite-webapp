@@ -25,7 +25,7 @@ namespace infc20.DataAccessLayer
             {
                 SqlConnection con = new SqlConnection(url);
                 con.Open();
-                Console.WriteLine("Connection opened");
+                //Console.WriteLine("Connection opened");
                 return con;
             }
             catch (SqlException se)

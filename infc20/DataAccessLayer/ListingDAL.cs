@@ -13,52 +13,42 @@ namespace infc20.DataAccessLayer
         private static readonly Type type = new Listing().GetType();
         private static Dictionary<string, object> parameters;
         private static string procedure;
+        private static string[] exceptionParams = new string[] { "Id", "Published" }; 
 
-        public Listing GetListing(int id)
+        public static Listing GetListing(int id)
         {
             procedure = ListProcedure.GET_LISTING.ToString();
-
-            parameters = new Dictionary<string, object>();
+            parameters = new Dictionary<string, object>(); 
             parameters.Add("Id", id);
 
-            List<object> listings = Utils.Get(type, procedure, parameters);
-            return listings.FirstOrDefault() as Listing;
+            return Utils.Get(type, procedure, parameters).FirstOrDefault() as Listing;
         }
 
-        public void AddListing(Listing listing)
+        public static void AddListing(Listing listing) // what if listing is null? 
         {
             procedure = ListProcedure.ADD_LISTING.ToString();
 
             if (listing != null)
             {
-                parameters = new Dictionary<string, object>();
-                parameters.Add("EndTime", listing.EndTime);
-                parameters.Add("ImgUrl", listing.ImgUrl);
-                parameters.Add("Title", listing.Title);
-                parameters.Add("Description", listing.Description);
-                parameters.Add("UserEmail", listing.UserEmail);
+                parameters = Utils.GetParams(listing, exceptionParams);
                 Utils.Insert(procedure, parameters);
             }
 
         }
 
-        public void RemoveListing(int id)
+        public static void RemoveListing(int id)
         {
             procedure = ListProcedure.REMOVE_LISTING.ToString();
-
-            parameters = new Dictionary<string, object>();
+            parameters = new Dictionary<string, object>(); 
             parameters.Add("Id", id);
 
-            Utils.Insert("REMOVE_LISTING", parameters);
+            Utils.Insert(procedure, parameters);
         }
 
-        public List<object> GetAllListings()
+        public static List<object> GetAllListings()
         {
             procedure = ListProcedure.GET_ALL_LISTINGS_DESC.ToString();
-
-            parameters = new Dictionary<string, object>();
-
-            return Utils.Get(type, "GET_ALL_LISTINGS_DESC", parameters);
+            return Utils.Get(type, procedure, parameters);
         }
 
     }

@@ -12,22 +12,37 @@ namespace infc20.DataAccessLayer
     {
         private static readonly Type type = new Bid().GetType();
         private static Dictionary<string, object> parameters;
-        private string procedure;
+        private static string procedure;
+        private static string[] exceptionParams = new string[] { "TimeStamp" };
 
-        public void AddBid(Bid bid)
+        public static void AddBid(Bid bid) // What if Bid is null? 
         {
             procedure = BidProcedure.ADD_BID.ToString();
 
             if (bid != null)
-            {
-                parameters = new Dictionary<string, object>();
-                parameters.Add("Email", bid.Email);
-                parameters.Add("ListingId", bid.ListingId);
-                parameters.Add("Amount", bid.Amount);
+                parameters = Utils.GetParams(bid, exceptionParams);
 
-                Utils.Insert(procedure, parameters);
-            }
+            Utils.Insert(procedure, parameters);
         }
 
+        public static void UpdateBid(Bid bid) // What if bid is null? 
+        {
+            procedure = BidProcedure.UPDATE_BID.ToString();
+
+            if (bid != null)
+                parameters = Utils.GetParams(bid, exceptionParams);
+
+            Utils.Insert(procedure, parameters);
+        }
+
+        public static List<object> GetBidsForListing(int listingId)
+        {
+            procedure = BidProcedure.GET_BIDS_FOR_LISTING.ToString();
+
+            parameters = new Dictionary<string, object>();
+            parameters.Add("ListingId", listingId);
+
+            return Utils.Get(type, procedure, parameters);
+        }
     }
 }

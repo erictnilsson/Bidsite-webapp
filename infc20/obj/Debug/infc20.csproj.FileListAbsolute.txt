@@ -1,0 +1,7 @@
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\obj\Debug\infc20.csprojResolveAssemblyReference.cache
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\obj\Debug\infc20.csproj.CoreCompileInputs.cache
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\bin\Debug\infc20.exe.config
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\bin\Debug\infc20.exe
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\bin\Debug\infc20.pdb
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\obj\Debug\infc20.exe
+C:\Users\Eric Nilsson\source\repos\infc20\infc20\obj\Debug\infc20.pdb

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,20 +29,19 @@ namespace infc20.Utilities
                         while (dataReader.Read() && dataReader.HasRows)
                         {
                             var target = Activator.CreateInstance(targetType);
-
                             foreach (var prop in target.GetType().GetProperties())
                             {
                                 if (prop != null && prop.CanWrite)
                                 {
                                     try
                                     {
+                                        var v = dataReader[prop.Name];
                                         prop.SetValue(target, dataReader[prop.Name], null);
                                     }
-                                    catch (Exception e)
+                                    catch (IndexOutOfRangeException e)
                                     {
                                         continue;
                                     }
-
                                 }
                             }
                             tuples.Add(target);
@@ -68,16 +68,25 @@ namespace infc20.Utilities
             }
         }
 
-        public static Dictionary<string, object> GetParams(object target)
+        public static Dictionary<string, object> GetParams(object target, string[] exceptions)
         {
-            Dictionary<string, object> parameters = null;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
             if (target != null)
             {
-                parameters = new Dictionary<string, object>();
                 foreach (var prop in target.GetType().GetProperties())
-                    parameters.Add(prop.Name, prop.GetValue(target, null));
-            }
+                {
+                    if (exceptions == null)
+                        parameters.Add(prop.Name, prop.GetValue(target, null));
 
+                    else if (exceptions != null && !exceptions.Contains<string>(prop.Name))
+                        parameters.Add(prop.Name, prop.GetValue(target, null));
+
+                    else continue;
+
+
+                }
+            }
             return parameters;
         }
     }

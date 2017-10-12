@@ -45,10 +45,12 @@
     <Compile Include="DataAccessLayer\BidDAL.cs" />
     <Compile Include="DataAccessLayer\Connector.cs" />
     <Compile Include="DataAccessLayer\ListingDAL.cs" />
+    <Compile Include="DataAccessLayer\ReviewDAL.cs" />
     <Compile Include="DataAccessLayer\TagDAL.cs" />
     <Compile Include="DataAccessLayer\UserDAL.cs" />
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\Listing.cs" />
+    <Compile Include="Model\Review.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Program.cs" />
