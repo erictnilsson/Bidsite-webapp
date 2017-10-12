@@ -12,39 +12,42 @@ namespace infc20.Utilities
 {
     static class Utils
     {
-        public static List<object> Get(Type targetType, string procedureCommand, Dictionary<string, object> parameters)
+        public static List<object> Get(Type targetType, string procedure, Dictionary<string, object> parameters)
         {
             List<object> tuples = new List<object>();
-            using (SqlConnection con = Connector.Connect())
+            if (targetType != null && procedure != null)
             {
-                using (SqlCommand cmd = new SqlCommand(procedureCommand, con))
+                using (SqlConnection con = Connector.Connect())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    foreach (var entry in parameters)
+                    using (SqlCommand cmd = new SqlCommand(procedure, con))
                     {
-                        cmd.Parameters.AddWithValue(entry.Key, entry.Value);
-                    }
-                    using (SqlDataReader dataReader = cmd.ExecuteReader())
-                    {
-                        while (dataReader.Read() && dataReader.HasRows)
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (parameters != null)
+                            foreach (var entry in parameters)
+                                cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+
+                        using (SqlDataReader dataReader = cmd.ExecuteReader())
                         {
-                            var target = Activator.CreateInstance(targetType);
-                            foreach (var prop in target.GetType().GetProperties())
+                            while (dataReader.Read() && dataReader.HasRows)
                             {
-                                if (prop != null && prop.CanWrite)
+                                var target = Activator.CreateInstance(targetType);
+                                foreach (var prop in target.GetType().GetProperties())
                                 {
-                                    try
+                                    if (prop != null && prop.CanWrite)
                                     {
-                                        var v = dataReader[prop.Name];
-                                        prop.SetValue(target, dataReader[prop.Name], null);
-                                    }
-                                    catch (IndexOutOfRangeException e)
-                                    {
-                                        continue;
+                                        try
+                                        {
+                                            prop.SetValue(target, dataReader[prop.Name], null);
+                                        }
+                                        catch (IndexOutOfRangeException e)
+                                        {
+                                            continue;
+                                        }
                                     }
                                 }
+                                tuples.Add(target);
                             }
-                            tuples.Add(target);
                         }
                     }
                 }
@@ -52,18 +55,29 @@ namespace infc20.Utilities
             return tuples;
         }
 
-        public static void Insert(string procedureCommand, Dictionary<string, object> parameters)
+        public static void InsertEntity(object entity, string procedure, string[] exceptionParams)
         {
-            using (SqlConnection con = Connector.Connect())
+            if (entity != null && procedure != null)
             {
-                using (SqlCommand cmd = new SqlCommand(procedureCommand, con))
+                Dictionary<string, object> parameters = Utils.GetParams(entity, exceptionParams);
+                Utils.Insert(procedure, parameters);
+            }
+        }
+
+        public static void Insert(string procedure, Dictionary<string, object> parameters)
+        {
+            if (procedure != null && parameters != null)
+            {
+                using (SqlConnection con = Connector.Connect())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    foreach (var entry in parameters)
+                    using (SqlCommand cmd = new SqlCommand(procedure, con))
                     {
-                        cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        foreach (var entry in parameters)
+                            cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+
+                        cmd.ExecuteNonQuery();
                     }
-                    cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -83,8 +97,6 @@ namespace infc20.Utilities
                         parameters.Add(prop.Name, prop.GetValue(target, null));
 
                     else continue;
-
-
                 }
             }
             return parameters;

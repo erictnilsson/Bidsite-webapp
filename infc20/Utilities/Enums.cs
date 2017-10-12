@@ -10,6 +10,7 @@ namespace infc20.Utilities
     {
         ADD_LISTING,
         GET_LISTING,
+        UPDATE_LISTING, 
         REMOVE_LISTING,
         GET_ALL_LISTINGS_DESC
     }
@@ -26,8 +27,11 @@ namespace infc20.Utilities
     {
         ADD_TAG,
         ADD_TAG_TO_LISTING,
+        REMOVE_LISTING_TAG, 
+        REMOVE_TAG, 
         GET_TAG, 
-        GET_TAGS_FOR_LISTING
+        GET_TAGS_FOR_LISTING, 
+        GET_ALL_TAGS
     }
 
     enum BidProcedure

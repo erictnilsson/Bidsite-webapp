@@ -13,16 +13,19 @@ namespace infc20.DataAccessLayer
         private static readonly Type type = new Review().GetType();
         private static Dictionary<string, object> parameters;
         private static string procedure;
-        private static string[] exceptionParams; 
+        private static string[] exceptionParams = new string[] { "Id" };
 
 
         public static void AddReview(Review review)
         {
             procedure = ReviewProcedure.ADD_REVIEW.ToString();
-            exceptionParams = new string[] { "Id" }; 
-            parameters = Utils.GetParams(review, exceptionParams);
- 
-            Utils.Insert(procedure, parameters);
+            Utils.InsertEntity(review, procedure, exceptionParams); 
+        }
+
+        public static void AddReview(int rating, string description, User reviewedUser)
+        {
+            if (reviewedUser != null)
+                AddReview(new Review(rating, description, reviewedUser.Email));
         }
 
         public static Review GetReview(int reviewId)

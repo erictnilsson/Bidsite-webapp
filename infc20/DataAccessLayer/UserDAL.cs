@@ -27,20 +27,19 @@ namespace infc20.DataAccessLayer
         public static void AddUser(User user)
         {
             procedure = UserProcedure.ADD_USER.ToString();
-            if (user != null)
-                parameters = Utils.GetParams(user, exceptionParams);
-
-            Utils.Insert(procedure, parameters);
+            Utils.InsertEntity(user, procedure, exceptionParams); 
         }
 
         public static void UpdateUser(User user)
         {
             procedure = UserProcedure.UPDATE_USER.ToString();
+            Utils.InsertEntity  (user, procedure, exceptionParams); 
+        }
 
-            if (user != null)
-                parameters = Utils.GetParams(user, exceptionParams);
-
-            Utils.Insert(procedure, parameters);
+        public static void RemoveUser(User user)
+        {
+            procedure = UserProcedure.REMOVE_USER.ToString();
+            Utils.InsertEntity(user, procedure, exceptionParams); 
         }
 
         public static void RemoveUser(string email)

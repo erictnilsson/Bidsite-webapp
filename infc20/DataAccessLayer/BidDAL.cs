@@ -15,26 +15,18 @@ namespace infc20.DataAccessLayer
         private static string procedure;
         private static string[] exceptionParams = new string[] { "TimeStamp" };
 
-        public static void AddBid(Bid bid) // What if Bid is null? 
+        public static void AddBid(Bid bid)
         {
             procedure = BidProcedure.ADD_BID.ToString();
-
-            if (bid != null)
-                parameters = Utils.GetParams(bid, exceptionParams);
-
-            Utils.Insert(procedure, parameters);
+            Utils.InsertEntity(bid, procedure, exceptionParams); 
         }
 
-        public static void UpdateBid(Bid bid) // What if bid is null? 
+        public static void AddBid(User user, Listing listing, double amount)
         {
-            procedure = BidProcedure.UPDATE_BID.ToString();
-
-            if (bid != null)
-                parameters = Utils.GetParams(bid, exceptionParams);
-
-            Utils.Insert(procedure, parameters);
+            if (user != null && listing != null)
+                AddBid(new Bid(user.Email, listing.Id, amount));
         }
-
+    
         public static List<object> GetBidsForListing(int listingId)
         {
             procedure = BidProcedure.GET_BIDS_FOR_LISTING.ToString();

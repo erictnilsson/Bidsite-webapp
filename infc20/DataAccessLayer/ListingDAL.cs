@@ -13,12 +13,12 @@ namespace infc20.DataAccessLayer
         private static readonly Type type = new Listing().GetType();
         private static Dictionary<string, object> parameters;
         private static string procedure;
-        private static string[] exceptionParams = new string[] { "Id", "Published" }; 
+        private static string[] exceptionParams = new string[] { "Id", "Published" };
 
         public static Listing GetListing(int id)
         {
             procedure = ListProcedure.GET_LISTING.ToString();
-            parameters = new Dictionary<string, object>(); 
+            parameters = new Dictionary<string, object>();
             parameters.Add("Id", id);
 
             return Utils.Get(type, procedure, parameters).FirstOrDefault() as Listing;
@@ -27,19 +27,25 @@ namespace infc20.DataAccessLayer
         public static void AddListing(Listing listing) // what if listing is null? 
         {
             procedure = ListProcedure.ADD_LISTING.ToString();
+            Utils.InsertEntity(listing, procedure, exceptionParams);
+        }
 
-            if (listing != null)
-            {
-                parameters = Utils.GetParams(listing, exceptionParams);
-                Utils.Insert(procedure, parameters);
-            }
+        public static void UpdateListing(Listing listing)
+        {
+            procedure = ListProcedure.UPDATE_LISTING.ToString();
+            Utils.InsertEntity(listing, procedure, exceptionParams);
+        }
 
+        public static void RemoveListing(Listing listing)
+        {
+            procedure = ListProcedure.REMOVE_LISTING.ToString();
+            Utils.InsertEntity(listing, procedure, exceptionParams); 
         }
 
         public static void RemoveListing(int id)
         {
             procedure = ListProcedure.REMOVE_LISTING.ToString();
-            parameters = new Dictionary<string, object>(); 
+            parameters = new Dictionary<string, object>();
             parameters.Add("Id", id);
 
             Utils.Insert(procedure, parameters);
@@ -50,6 +56,5 @@ namespace infc20.DataAccessLayer
             procedure = ListProcedure.GET_ALL_LISTINGS_DESC.ToString();
             return Utils.Get(type, procedure, parameters);
         }
-
     }
 }
